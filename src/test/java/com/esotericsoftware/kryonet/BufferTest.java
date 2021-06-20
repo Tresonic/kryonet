@@ -23,11 +23,11 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.esotericsoftware.kryo.Kryo;
+import org.junit.jupiter.api.Test;
 
 public class BufferTest extends KryoNetTestCase {
-	AtomicInteger received = new AtomicInteger();
-	AtomicInteger receivedBytes = new AtomicInteger();
 
+	@Test
 	public void testManyLargeMessages() throws IOException {
 		final int messageCount = 1024;
 		int objectBufferSize = 10250;
@@ -39,8 +39,8 @@ public class BufferTest extends KryoNetTestCase {
 		server.bind(tcpPort);
 
 		server.addListener(new Listener() {
-			AtomicInteger received = new AtomicInteger();
-			AtomicInteger receivedBytes = new AtomicInteger();
+			final AtomicInteger received = new AtomicInteger();
+			final AtomicInteger receivedBytes = new AtomicInteger();
 
 			public void received(Connection connection, Object object) {
 				if (object instanceof LargeMessage) {
@@ -70,8 +70,8 @@ public class BufferTest extends KryoNetTestCase {
 		client.connect(5000, host, tcpPort);
 
 		client.addListener(new Listener() {
-			AtomicInteger received = new AtomicInteger();
-			AtomicInteger receivedBytes = new AtomicInteger();
+			final AtomicInteger received = new AtomicInteger();
+			final AtomicInteger receivedBytes = new AtomicInteger();
 
 			public void received(Connection connection, Object object) {
 				if (object instanceof LargeMessage) {

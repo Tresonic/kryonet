@@ -60,7 +60,7 @@ import com.esotericsoftware.kryonet.serialization.Serialization;
  */
 public class Server implements EndPoint {
 	public static final int DEFAULT_WRITE_BUFFER_SIZE = 16384;
-	public static final int DEFAULT_OBJECT_BUUFER_SIZE = 2048;
+	public static final int DEFAULT_OBJECT_BUFFER_SIZE = 2048;
 
 	private final Serialization serialization;
 	private final int writeBufferSize, objectBufferSize;
@@ -69,16 +69,16 @@ public class Server implements EndPoint {
 	private ServerSocketChannel serverChannel;
 	private UdpConnection udp;
 	private Connection[] connections = {};
-	private IntMap<Connection> pendingConnections = new IntMap<>();
+	private final IntMap<Connection> pendingConnections = new IntMap<>();
 	Listener[] listeners = {};
-	private Object listenerLock = new Object();
+	private final Object listenerLock = new Object();
 	private int nextConnectionID = 1;
 	private volatile boolean shutdown;
-	private Object updateLock = new Object();
+	private final Object updateLock = new Object();
 	private Thread updateThread;
 	private ServerDiscoveryHandler discoveryHandler;
 
-	private Listener dispatchListener = new Listener() {
+	private final Listener dispatchListener = new Listener() {
 		@Override
 		public void connected(Connection connection) {
 			Listener[] listeners = Server.this.listeners;
@@ -114,7 +114,7 @@ public class Server implements EndPoint {
 	 * object buffer size of <code>2048</code>.
 	 */
 	public Server() {
-		this(DEFAULT_WRITE_BUFFER_SIZE, DEFAULT_OBJECT_BUUFER_SIZE);
+		this(DEFAULT_WRITE_BUFFER_SIZE, DEFAULT_OBJECT_BUFFER_SIZE);
 	}
 
 	/**
@@ -151,7 +151,6 @@ public class Server implements EndPoint {
 			Serialization serialization) {
 		this.writeBufferSize = writeBufferSize;
 		this.objectBufferSize = objectBufferSize;
-
 		this.serialization = serialization;
 
 		this.discoveryHandler = new ServerDiscoveryHandler() {

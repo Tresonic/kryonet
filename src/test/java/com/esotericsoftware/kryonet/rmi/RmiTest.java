@@ -30,6 +30,9 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.KryoNetTestCase;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RmiTest extends KryoNetTestCase {
 	/**
@@ -38,6 +41,7 @@ public class RmiTest extends KryoNetTestCase {
 	 * client and server. The test exercises a number of remote method calls and
 	 * other features.
 	 */
+	@Test
 	public void testRMI() throws IOException {
 		Server server = new Server();
 		Kryo serverKryo = server.getKryo();
@@ -97,6 +101,7 @@ public class RmiTest extends KryoNetTestCase {
 		server.close();
 	}
 
+	@Test
 	public void testMany() throws IOException {
 		Server server = new Server();
 		Kryo serverKryo = server.getKryo();
@@ -145,7 +150,7 @@ public class RmiTest extends KryoNetTestCase {
 						}
 						try {
 							Thread.sleep(300);
-						} catch (InterruptedException ex) {
+						} catch (InterruptedException ignored) {
 						}
 						((RemoteObject) test).setResponseTimeout(3000);
 						for (int i = 0; i < 256; i++)
@@ -237,7 +242,7 @@ public class RmiTest extends KryoNetTestCase {
 				// Non-blocking call that errors out
 				remoteObject.setTransmitReturnValue(false);
 				test.throwException();
-				assertEquals(remoteObject.waitForLastResponse().getClass(),
+				assertSame(remoteObject.waitForLastResponse().getClass(),
 						UnsupportedOperationException.class);
 
 				// Call will time out if non-blocking isn't working properly
@@ -281,22 +286,21 @@ public class RmiTest extends KryoNetTestCase {
 		ObjectSpace.registerClasses(kryo);
 	}
 
-	public static interface TestObject {
-		public void throwException();
+	public interface TestObject {
+		void throwException();
 
-		public void moo();
+		void moo();
 
-		public void moo(String value);
+		void moo(String value);
 
-		public void moo(String value, long delay);
+		void moo(String value, long delay);
 
-		public float other();
+		float other();
 
-		public float slow();
+		float slow();
 	}
 
 	public static class TestObjectImpl implements TestObject {
-		public long value = System.currentTimeMillis();
 		private final float other;
 		public int moos;
 
@@ -335,7 +339,7 @@ public class RmiTest extends KryoNetTestCase {
 		public float slow() {
 			try {
 				Thread.sleep(300);
-			} catch (InterruptedException ex) {
+			} catch (InterruptedException ignored) {
 			}
 			return 666;
 		}

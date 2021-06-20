@@ -29,12 +29,16 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Listener.ThreadedListener;
 import com.esotericsoftware.kryonet.Server;
 import com.esotericsoftware.kryonet.rmi.ObjectSpace.RemoteObjectSerializer;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RmiSendObjectTest extends KryoNetTestCase {
 	/**
 	 * In this test the server has two objects in an object space. The client
 	 * uses the first remote object to get the second remote object.
 	 */
+	@Test
 	public void testRMI() throws IOException {
 		Server server = new Server();
 		Kryo serverKryo = server.getKryo();
@@ -113,10 +117,10 @@ public class RmiSendObjectTest extends KryoNetTestCase {
 		ObjectSpace.registerClasses(kryo);
 	}
 
-	static public interface TestObject {
-		public float other();
+	public interface TestObject {
+		float other();
 
-		public OtherObject getOtherObject();
+		OtherObject getOtherObject();
 	}
 
 	static public class TestObjectImpl implements TestObject {
@@ -131,8 +135,8 @@ public class RmiSendObjectTest extends KryoNetTestCase {
 		}
 	}
 
-	static public interface OtherObject {
-		public float value();
+	public interface OtherObject {
+		float value();
 	}
 
 	static public class OtherObjectImpl implements OtherObject {

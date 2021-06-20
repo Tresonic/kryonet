@@ -39,7 +39,7 @@ import com.esotericsoftware.kryonet.serialization.Serialization;
  * @author Nathan Sweet <misc@n4te.com>
  */
 class TcpConnection {
-	
+
 	SocketChannel socketChannel;
 	int keepAliveMillis = 8000;
 	final ByteBuffer readBuffer, writeBuffer;
@@ -122,10 +122,7 @@ class TcpConnection {
 			lastReadTime = lastWriteTime = System.currentTimeMillis();
 		} catch (IOException ex) {
 			close();
-			IOException ioEx = new IOException(
-					"Unable to connect to: " + remoteAddress);
-			ioEx.initCause(ex);
-			throw ioEx;
+			throw new IOException("Unable to connect to: " + remoteAddress, ex);
 		}
 	}
 

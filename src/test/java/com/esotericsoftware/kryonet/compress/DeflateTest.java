@@ -31,8 +31,10 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.KryoNetTestCase;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import org.junit.jupiter.api.Test;
 
 public class DeflateTest extends KryoNetTestCase {
+	@Test
 	public void testDeflate() throws IOException {
 		final Server server = new Server();
 		register(server.getKryo());
@@ -41,7 +43,7 @@ public class DeflateTest extends KryoNetTestCase {
 		data.text = "some text here aaaaaaaaaabbbbbbbbbbbcccccccccc";
 		data.stuff = new short[] { 1, 2, 3, 4, 5, 6, 7, 8 };
 
-		final ArrayList a = new ArrayList();
+		final ArrayList<Integer> a = new ArrayList<>();
 		a.add(12);
 		a.add(null);
 		a.add(34);
@@ -79,8 +81,8 @@ public class DeflateTest extends KryoNetTestCase {
 	static public void register(Kryo kryo) {
 		kryo.register(short[].class);
 		kryo.register(SomeData.class, new DeflateSerializer(
-				new FieldSerializer(kryo, SomeData.class)));
-		kryo.register(ArrayList.class, new CollectionSerializer());
+				new FieldSerializer<>(kryo, SomeData.class)));
+		kryo.register(ArrayList.class, new CollectionSerializer<>());
 	}
 
 	static public class SomeData {

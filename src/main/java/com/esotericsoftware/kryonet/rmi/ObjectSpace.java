@@ -420,7 +420,7 @@ public class ObjectSpace {
 		private boolean udp;
 		private Byte lastResponseID;
 		private byte nextResponseId = 1;
-		private Listener responseListener;
+		private final Listener responseListener;
 
 		final ReentrantLock lock = new ReentrantLock();
 		final Condition responseCondition = lock.newCondition();
@@ -478,55 +478,56 @@ public class ObjectSpace {
 			Class<?> declaringClass = method.getDeclaringClass();
 			if (declaringClass == RemoteObject.class) {
 				String name = method.getName();
-				if (name.equals("close")) {
+				switch (name) {
+				case "close":
 					close();
 					return null;
-				} else if (name.equals("setResponseTimeout")) {
+				case "setResponseTimeout":
 					timeoutMillis = (Integer) args[0];
 					return null;
-				} else if (name.equals("setNonBlocking")) {
+				case "setNonBlocking":
 					nonBlocking = (Boolean) args[0];
 					return null;
-				} else if (name.equals("setTransmitReturnValue")) {
+				case "setTransmitReturnValue":
 					transmitReturnValue = (Boolean) args[0];
 					return null;
-				} else if (name.equals("setUDP")) {
+				case "setUDP":
 					udp = (Boolean) args[0];
 					return null;
-				} else if (name.equals("setTransmitExceptions")) {
+				case "setTransmitExceptions":
 					transmitExceptions = (Boolean) args[0];
 					return null;
-				} else if (name.equals("setRemoteToString")) {
+				case "setRemoteToString":
 					remoteToString = (Boolean) args[0];
 					return null;
-				} else if (name.equals("waitForLastResponse")) {
+				case "waitForLastResponse":
 					if (lastResponseID == null)
 						throw new IllegalStateException(
 								"There is no last response to wait for.");
 					return waitForResponse(lastResponseID);
-				} else if (name.equals("hasLastResponse")) {
+				case "hasLastResponse":
 					if (lastResponseID == null)
 						throw new IllegalStateException(
 								"There is no last response.");
 					synchronized (this) {
 						return responseTable[lastResponseID] != null;
 					}
-				} else if (name.equals("getLastResponseID")) {
+				case "getLastResponseID":
 					if (lastResponseID == null)
 						throw new IllegalStateException(
 								"There is no last response ID.");
 					return lastResponseID;
-				} else if (name.equals("waitForResponse")) {
+				case "waitForResponse":
 					if (!transmitReturnValue && !transmitExceptions
 							&& nonBlocking)
 						throw new IllegalStateException(
 								"This RemoteObject is currently set to ignore all responses.");
 					return waitForResponse((Byte) args[0]);
-				} else if (name.equals("hasResponse")) {
+				case "hasResponse":
 					synchronized (this) {
 						return responseTable[(Byte) args[0]] != null;
 					}
-				} else if (name.equals("getConnection")) {
+				case "getConnection":
 					return connection;
 				}
 				// Should never happen, for debugging purposes only
@@ -619,7 +620,7 @@ public class ObjectSpace {
 			}
 			try {
 				Object result = waitForResponse(lastResponseID);
-				if (result != null && result instanceof Exception)
+				if (result instanceof Exception)
 					throw (Exception) result;
 				else
 					return result;

@@ -56,7 +56,7 @@ public class Connection {
 	UdpConnection udp;
 	InetSocketAddress udpRemoteAddress;
 	private Listener[] listeners = {};
-	private Object listenerLock = new Object();
+	private final Object listenerLock = new Object();
 	private int lastPingID;
 	private long lastPingSendTime;
 	private int returnTripTime;
@@ -490,8 +490,6 @@ public class Connection {
 		if (getClass() != obj.getClass())
 			return false;
 		Connection other = (Connection) obj;
-		if (id != other.id)
-			return false;
-		return true;
+		return id == other.id;
 	}
 }
